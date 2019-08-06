@@ -1,6 +1,0 @@
-### JetBrains
-.idea/
-cmake-build-debug/
-
-### Git
-.gitignore
