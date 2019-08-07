@@ -97,15 +97,8 @@ bool MapSearchNode::IsSameState( MapSearchNode &rhs )
 {
 
 	// same state in a maze search is simply when (x,y) are the same
-	if( (x == rhs.x) &&
-		(y == rhs.y) )
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    return ( x == rhs.x ) &&
+           ( y == rhs.y );
 
 }
 
@@ -128,13 +121,9 @@ float MapSearchNode::GoalDistanceEstimate( MapSearchNode &nodeGoal )
 bool MapSearchNode::IsGoal( MapSearchNode &nodeGoal )
 {
 
-	if( (x == nodeGoal.x) &&
-		(y == nodeGoal.y) )
-	{
-		return true;
-	}
+    return ( x == nodeGoal.x ) &&
+           ( y == nodeGoal.y );
 
-	return false;
 }
 
 // This generates the successors to the given Node. It uses a helper function called
