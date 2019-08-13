@@ -1,27 +1,27 @@
 /*
-A* Algorithm Implementation using STL is
-Copyright (C)2001-2005 Justin Heyes-Jones
-
-Permission is given by the author to freely redistribute and 
-include this code in any program as long as this credit is 
-given where due.
- 
-  COVERED CODE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS, 
-  WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, 
-  INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE COVERED CODE 
-  IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE
-  OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY AND 
-  PERFORMANCE OF THE COVERED CODE IS WITH YOU. SHOULD ANY COVERED 
-  CODE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL 
-  DEVELOPER OR ANY OTHER CONTRIBUTOR) ASSUME THE COST OF ANY 
-  NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF 
-  WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE 
-  OF ANY COVERED CODE IS AUTHORIZED HEREUNDER EXCEPT UNDER
-  THIS DISCLAIMER.
- 
-  Use at your own risk!
-
-*/
+ * A* Algorithm Implementation using STL is
+ * Copyright (C)2001-2005 Justin Heyes-Jones
+ *
+ * Permission is given by the author to freely redistribute and
+ * include this code in any program as long as this credit is
+ * given where due.
+ *
+ *   COVERED CODE IS PROVIDED UNDER THIS LICENSE ON AN "AS IS" BASIS,
+ *   WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
+ *   INCLUDING, WITHOUT LIMITATION, WARRANTIES THAT THE COVERED CODE
+ *   IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE
+ *   OR NON-INFRINGING. THE ENTIRE RISK AS TO THE QUALITY AND
+ *   PERFORMANCE OF THE COVERED CODE IS WITH YOU. SHOULD ANY COVERED
+ *   CODE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT THE INITIAL
+ *   DEVELOPER OR ANY OTHER CONTRIBUTOR) ASSUME THE COST OF ANY
+ *   NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF
+ *   WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE
+ *   OF ANY COVERED CODE IS AUTHORIZED HEREUNDER EXCEPT UNDER
+ *   THIS DISCLAIMER.
+ *
+ *   Use at your own risk!
+ *
+ */
 
 #ifndef STLASTAR_H
 #define STLASTAR_H
@@ -40,13 +40,6 @@ given where due.
 #include <cfloat>
 
 using namespace std;
-
-// fast fixed size memory allocator, used for fast node memory management
-#include "FixedSizeAllocator.hpp"
-
-// Fixed size memory allocator can be disabled to compare performance
-// Uses std new and delete instead if you turn it off
-#define USE_FSA_MEMORY 1
 
 // disable warning that debugging information has lines that are truncated
 // occurs in stl headers
@@ -112,11 +105,6 @@ private: // data
 
     Node *m_CurrentSolutionNode;
 
-#if USE_FSA_MEMORY
-    // Memory
-    FixedSizeAllocator<Node> m_FixedSizeAllocator;
-#endif
-
     //Debug : need to keep these two iterators around
     // for the user Dbg functions
     typename vector< Node * >::iterator iterDbgOpen;
@@ -160,9 +148,6 @@ public: // methods
 	AStarSearch() :
 		m_State( SEARCH_STATE_NOT_INITIALISED ),
 		m_CurrentSolutionNode( NULL ),
-#if USE_FSA_MEMORY
-		m_FixedSizeAllocator( 1000 ),
-#endif
 		m_AllocateNodeCount(0),
 		m_CancelRequest( false )
 	{
@@ -171,9 +156,6 @@ public: // methods
 	AStarSearch( int MaxNodes ) :
 		m_State( SEARCH_STATE_NOT_INITIALISED ),
 		m_CurrentSolutionNode( NULL ),
-#if USE_FSA_MEMORY
-		m_FixedSizeAllocator( MaxNodes ),
-#endif
 		m_AllocateNodeCount(0),
 		m_CancelRequest( false )
 	{
@@ -696,9 +678,6 @@ public: // methods
 
 	void EnsureMemoryFreed()
 	{
-#if USE_FSA_MEMORY
-		assert(m_AllocateNodeCount == 0);
-#endif
 
 	}
 
@@ -784,35 +763,16 @@ private: // methods
 	// Node memory management
 	Node *AllocateNode()
 	{
-
-#if !USE_FSA_MEMORY
 		m_AllocateNodeCount ++;
 		Node *p = new Node;
 		return p;
-#else
-		Node *address = m_FixedSizeAllocator.alloc();
-
-		if( !address )
-		{
-			return NULL;
-		}
-		m_AllocateNodeCount ++;
-		Node *p = new (address) Node;
-		return p;
-#endif
 	}
 
 	void FreeNode( Node *node )
 	{
 
 		m_AllocateNodeCount --;
-
-#if !USE_FSA_MEMORY
 		delete node;
-#else
-		node->~Node();
-		m_FixedSizeAllocator.free( node );
-#endif
 	}
 
 };
