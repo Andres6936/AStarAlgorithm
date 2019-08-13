@@ -58,6 +58,75 @@ using namespace std;
 template <class UserState> class AStarSearch
 {
 
+public:
+
+    /**
+     * A node represents a possible state in the search
+     * The user provided state type is included inside this type
+     */
+    class Node
+    {
+
+    public:
+
+        Node *parent; // used during the search to record the parent of successor nodes
+        Node *child; // used after the search for the application to view the search in reverse
+
+        float g; // cost of this node + it's predecessors
+        float h; // heuristic estimate of distance to goal
+        float f; // sum of cumulative cost of predecessors and self and heuristic
+
+        Node() :
+                parent( 0 ),
+                child( 0 ),
+                g( 0.0f ),
+                h( 0.0f ),
+                f( 0.0f )
+        {
+        }
+
+        UserState m_UserState;
+    };
+
+private: // data
+
+    // Heap (simple vector but used as a heap, cf. Steve Rabin's game gems article)
+    vector< Node *> m_OpenList;
+
+    // Closed list is a vector.
+    vector< Node * > m_ClosedList;
+
+    // Successors is a vector filled out by the user each type successors to a node
+    // are generated
+    vector< Node * > m_Successors;
+
+    // State
+    unsigned int m_State;
+
+    // Counts steps
+    int m_Steps;
+
+    // Start and goal state pointers
+    Node *m_Start;
+    Node *m_Goal;
+
+    Node *m_CurrentSolutionNode;
+
+#if USE_FSA_MEMORY
+    // Memory
+    FixedSizeAllocator<Node> m_FixedSizeAllocator;
+#endif
+
+    //Debug : need to keep these two iterators around
+    // for the user Dbg functions
+    typename vector< Node * >::iterator iterDbgOpen;
+    typename vector< Node * >::iterator iterDbgClosed;
+
+    // debugging : count memory allocation and free's
+    int m_AllocateNodeCount;
+
+    bool m_CancelRequest;
+
 public: // data
 
 	enum
@@ -69,36 +138,6 @@ public: // data
 		SEARCH_STATE_OUT_OF_MEMORY,
 		SEARCH_STATE_INVALID
 	};
-
-
-	// A node represents a possible state in the search
-	// The user provided state type is included inside this type
-
-	public:
-
-	class Node
-	{
-		public:
-
-			Node *parent; // used during the search to record the parent of successor nodes
-			Node *child; // used after the search for the application to view the search in reverse
-			
-			float g; // cost of this node + it's predecessors
-			float h; // heuristic estimate of distance to goal
-			float f; // sum of cumulative cost of predecessors and self and heuristic
-
-			Node() :
-				parent( 0 ),
-				child( 0 ),
-				g( 0.0f ),
-				h( 0.0f ),
-				f( 0.0f )
-			{			
-			}
-
-			UserState m_UserState;
-	};
-
 
 	// For sorting the heap the STL needs compare function that lets us compare
 	// the f value of two nodes
@@ -775,45 +814,6 @@ private: // methods
 		m_FixedSizeAllocator.free( node );
 #endif
 	}
-
-private: // data
-
-	// Heap (simple vector but used as a heap, cf. Steve Rabin's game gems article)
-	vector< Node *> m_OpenList;
-
-	// Closed list is a vector.
-	vector< Node * > m_ClosedList; 
-
-	// Successors is a vector filled out by the user each type successors to a node
-	// are generated
-	vector< Node * > m_Successors;
-
-	// State
-	unsigned int m_State;
-
-	// Counts steps
-	int m_Steps;
-
-	// Start and goal state pointers
-	Node *m_Start;
-	Node *m_Goal;
-
-	Node *m_CurrentSolutionNode;
-
-#if USE_FSA_MEMORY
-	// Memory
- 	FixedSizeAllocator<Node> m_FixedSizeAllocator;
-#endif
-	
-	//Debug : need to keep these two iterators around
-	// for the user Dbg functions
-	typename vector< Node * >::iterator iterDbgOpen;
-	typename vector< Node * >::iterator iterDbgClosed;
-
-	// debugging : count memory allocation and free's
-	int m_AllocateNodeCount;
-	
-	bool m_CancelRequest;
 
 };
 
