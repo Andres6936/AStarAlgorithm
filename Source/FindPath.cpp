@@ -11,20 +11,22 @@
 #include "AStar.hpp" // See header for copyright and usage information
 
 #include <iostream>
-#include <stdio.h>
-#include <math.h>
+#include <cstdio>
+#include <cmath>
+#include <chrono>
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0
 
 using namespace std;
+using namespace std::chrono;
 
 // Global data
 
 // The world map
 
-const int MAP_WIDTH = 20;
-const int MAP_HEIGHT = 20;
+constexpr short MAP_WIDTH = 20;
+constexpr short MAP_HEIGHT = 20;
 
 int world_map[ MAP_WIDTH * MAP_HEIGHT ] = 
 {
@@ -198,8 +200,12 @@ float MapSearchNode::GetCost( MapSearchNode &successor )
 
 int main( int argc, char *argv[] )
 {
+    cout << "\nSTL A* Search implementation\n\n(C) 2001 Justin Heyes-Jones\n\n";
 
-	cout << "STL A* Search implementation\n(C)2001 Justin Heyes-Jones\n";
+    // Use auto keyword to avoid typing long
+    // type definitions to get the timepoint
+    // at this instant use function now()
+    auto start = high_resolution_clock::now();
 
 	// Our sample problem defines the world as a 2d array representing a terrain
 	// Each element contains an integer from 0 to 5 which indicates the cost 
@@ -213,7 +219,7 @@ int main( int argc, char *argv[] )
 
 	unsigned int SearchCount = 0;
 
-	const unsigned int NumSearches = 1;
+    constexpr unsigned int NumSearches = 1;
 
 	while(SearchCount < NumSearches)
 	{
@@ -326,8 +332,23 @@ int main( int argc, char *argv[] )
 
 		astarsearch.EnsureMemoryFreed();
 	}
-	
-	return 0;
+
+    // After function call
+    auto stop = high_resolution_clock::now();
+
+
+    // Subtract stop and start timepoints and
+    // cast it to required unit. Predefined units
+    // are nanoseconds, microseconds, milliseconds,
+    // seconds, minutes, hours. Use duration_cast()
+    // function.
+    auto duration = duration_cast<microseconds>(stop - start);
+
+    // To get the value of duration use the count()
+    // member function on the duration object
+    cout << "\nMicroseconds: " << duration.count() << "\n";
+
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
