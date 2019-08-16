@@ -69,13 +69,13 @@ public:
         float h; // heuristic estimate of distance to goal
         float f; // sum of cumulative cost of predecessors and self and heuristic
 
-        Node() :
-                parent( 0 ),
-                child( 0 ),
-                g( 0.0f ),
-                h( 0.0f ),
-                f( 0.0f )
+        Node()
         {
+            parent = nullptr;
+            child = nullptr;
+            g = 0.0f;
+            h = 0.0f;
+            f = 0.0f;
         }
 
         UserState m_UserState;
@@ -165,10 +165,13 @@ public: // methods
 	{
 		m_CancelRequest = false;
 
-		m_Start = AllocateNode();
-		m_Goal = AllocateNode();
+		m_Start = new Node();
+		m_AllocateNodeCount += 1;
 
-		assert((m_Start != NULL && m_Goal != NULL));
+		m_Goal = new Node();
+        m_AllocateNodeCount += 1;
+
+		assert((m_Start != nullptr && m_Goal != nullptr));
 		
 		m_Start->m_UserState = Start;
 		m_Goal->m_UserState = Goal;
@@ -188,7 +191,7 @@ public: // methods
 		m_OpenList.push_back( m_Start ); // heap now unsorted
 
 		// Sort back element into heap
-		push_heap( m_OpenList.begin(), m_OpenList.end(), HeapCompare_f() );
+		push_heap( m_OpenList.begin(), m_OpenList.end() );
 
 		// Initialise counter for search steps
 		m_Steps = 0;
@@ -452,7 +455,8 @@ public: // methods
 	// when expanding the search frontier
 	bool AddSuccessor( UserState &State )
 	{
-		Node *node = AllocateNode();
+		Node *node = new Node();
+		m_AllocateNodeCount += 1;
 
 		if( node )
 		{
@@ -480,8 +484,6 @@ public: // methods
 				Node *del = n;
 				n = n->child;
 				FreeNode( del );
-
-				del = NULL;
 
 			} while( n != m_Goal );
 
@@ -753,15 +755,7 @@ private: // methods
 
 	}
 
-	// Node memory management
-	Node *AllocateNode()
-	{
-		m_AllocateNodeCount ++;
-		Node *p = new Node;
-		return p;
-	}
-
-	void FreeNode( Node *node )
+    void FreeNode( Node *node )
 	{
 
 		m_AllocateNodeCount --;

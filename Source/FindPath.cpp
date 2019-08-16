@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <cmath>
 #include <chrono>
+#include <iomanip>
 
 #define DEBUG_LISTS 0
 #define DEBUG_LIST_LENGTHS_ONLY 0
@@ -28,7 +29,7 @@ using namespace std::chrono;
 constexpr short MAP_WIDTH = 20;
 constexpr short MAP_HEIGHT = 20;
 
-int world_map[ MAP_WIDTH * MAP_HEIGHT ] = 
+constexpr int worldMap[MAP_WIDTH * MAP_HEIGHT ] =
 {
 
 // 0001020304050607080910111213141516171819
@@ -59,16 +60,13 @@ int world_map[ MAP_WIDTH * MAP_HEIGHT ] =
 
 int GetMap( int x, int y )
 {
-	if( x < 0 ||
-	    x >= MAP_WIDTH ||
-		 y < 0 ||
-		 y >= MAP_HEIGHT
-	  )
+	if( x < 0 || x >= MAP_WIDTH ||
+	    y < 0 || y >= MAP_HEIGHT )
 	{
 		return 9;	 
 	}
 
-	return world_map[(y*MAP_WIDTH)+x];
+	return worldMap[ ( y * MAP_WIDTH) + x];
 }
 
 
@@ -77,7 +75,9 @@ int GetMap( int x, int y )
 
 class MapSearchNode
 {
+
 public:
+
 	int x;	 // the (x,y) positions of the node
 	int y;	
 	
@@ -106,10 +106,7 @@ bool MapSearchNode::IsSameState( MapSearchNode &rhs )
 
 void MapSearchNode::PrintNodeInfo()
 {
-	char str[100];
-	sprintf( str, "Node position : (%d,%d)\n", x,y );
-
-	cout << str;
+	cout << "Node position : (" << setw(2) << x << ", " << setw(2) << y << ")\n";
 }
 
 // Here's the heuristic function that estimates the distance from a Node
@@ -149,33 +146,28 @@ bool MapSearchNode::GetSuccessors( AStarSearch<MapSearchNode> *astarsearch, MapS
 
 	// push each possible move except allowing the search to go backwards
 
-	if( (GetMap( x-1, y ) < 9) 
-		&& !((parent_x == x-1) && (parent_y == y))
+	if( (GetMap( x-1, y ) < 9) && !((parent_x == x-1) && (parent_y == y))
 	  ) 
 	{
 		NewNode = MapSearchNode( x-1, y );
 		astarsearch->AddSuccessor( NewNode );
-	}	
+	}
 
-	if( (GetMap( x, y-1 ) < 9) 
-		&& !((parent_x == x) && (parent_y == y-1))
+    if( (GetMap( x+1, y ) < 9) && !((parent_x == x+1) && (parent_y == y))
+            )
+    {
+        NewNode = MapSearchNode( x+1, y );
+        astarsearch->AddSuccessor( NewNode );
+    }
+
+    if( (GetMap( x, y-1 ) < 9) && !((parent_x == x) && (parent_y == y-1))
 	  ) 
 	{
-		NewNode = MapSearchNode( x, y-1 );
-		astarsearch->AddSuccessor( NewNode );
-	}	
-
-	if( (GetMap( x+1, y ) < 9)
-		&& !((parent_x == x+1) && (parent_y == y))
-	  ) 
-	{
-		NewNode = MapSearchNode( x+1, y );
-		astarsearch->AddSuccessor( NewNode );
-	}	
-
+        NewNode = MapSearchNode( x, y-1 );
+        astarsearch->AddSuccessor( NewNode );
+    }
 		
-	if( (GetMap( x, y+1 ) < 9) 
-		&& !((parent_x == x) && (parent_y == y+1))
+	if( (GetMap( x, y+1 ) < 9) && !((parent_x == x) && (parent_y == y+1))
 		)
 	{
 		NewNode = MapSearchNode( x, y+1 );
@@ -288,7 +280,7 @@ int main( int argc, char *argv[] )
 
 		if( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED )
 		{
-			cout << "Search found goal state\n";
+			cout << "\nSearch found goal state\n";
 
 				MapSearchNode *node = astarsearch.GetSolutionStart();
 
@@ -298,6 +290,7 @@ int main( int argc, char *argv[] )
 				int steps = 0;
 
 				node->PrintNodeInfo();
+
 				for( ;; )
 				{
 					node = astarsearch.GetSolutionNext();
@@ -312,7 +305,7 @@ int main( int argc, char *argv[] )
 				
 				};
 
-				cout << "Solution steps " << steps << endl;
+				cout << "\nSolution steps " << steps << endl;
 
 				// Once you're done with the solution you can free the nodes up
 				astarsearch.FreeSolutionNodes();
@@ -321,7 +314,7 @@ int main( int argc, char *argv[] )
 		}
 		else if( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_FAILED ) 
 		{
-			cout << "Search terminated. Did not find goal state\n";
+			cout << "\nSearch terminated. Did not find goal state\n";
 		
 		}
 
