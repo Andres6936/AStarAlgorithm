@@ -11,13 +11,9 @@
 #include "AStar.hpp" // See header for copyright and usage information
 
 #include <iostream>
-#include <cstdio>
 #include <cmath>
 #include <chrono>
 #include <iomanip>
-
-#define DEBUG_LISTS 0
-#define DEBUG_LIST_LENGTHS_ONLY 0
 
 using namespace std;
 using namespace std::chrono;
@@ -86,7 +82,7 @@ public:
 
 	float GoalDistanceEstimate( SearchNode &nodeGoal );
 	bool IsGoal( SearchNode &nodeGoal );
-	bool GetSuccessors( AStarSearch<SearchNode> *astarsearch, SearchNode *parent_node );
+	bool GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *parent_node );
 	float GetCost( SearchNode &successor );
 	bool IsSameState( SearchNode &rhs );
 
@@ -129,7 +125,7 @@ bool SearchNode::IsGoal( SearchNode &nodeGoal )
 // AddSuccessor to give the successors to the AStar class. The A* specific initialisation
 // is done for each node internally, so here you just set the state information that
 // is specific to the application
-bool SearchNode::GetSuccessors( AStarSearch<SearchNode> *astarsearch, SearchNode *parent_node )
+bool SearchNode::GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *parent_node )
 {
 
 	int parent_x = -1; 
@@ -206,88 +202,77 @@ int main( int argc, char *argv[] )
 	// most difficult. 9 indicates that we cannot pass.
 
 	// Create an instance of the search class...
+	AStar<SearchNode> aStar;
 
-	AStarSearch<SearchNode> astarsearch;
+    // Create a start state
+    SearchNode nodeStart;
+    nodeStart.x = rand()%MAP_WIDTH;
+    nodeStart.y = rand()%MAP_HEIGHT;
 
-	unsigned int SearchCount = 0;
+    // Define the goal state
+    SearchNode nodeEnd;
+    nodeEnd.x = rand()%MAP_WIDTH;
+    nodeEnd.y = rand()%MAP_HEIGHT;
 
-    constexpr unsigned int NumSearches = 1;
+    // Set Start and goal states
 
-	while(SearchCount < NumSearches)
-	{
+    aStar.SetStartAndGoalStates( nodeStart, nodeEnd );
 
-		// Create a start state
-		SearchNode nodeStart;
-		nodeStart.x = rand()%MAP_WIDTH;
-		nodeStart.y = rand()%MAP_HEIGHT; 
+    unsigned int SearchState;
+    unsigned int SearchSteps = 0;
 
-		// Define the goal state
-		SearchNode nodeEnd;
-		nodeEnd.x = rand()%MAP_WIDTH;						
-		nodeEnd.y = rand()%MAP_HEIGHT; 
-		
-		// Set Start and goal states
-		
-		astarsearch.SetStartAndGoalStates( nodeStart, nodeEnd );
+    SearchState = aStar.SearchStep();
 
-		unsigned int SearchState;
-		unsigned int SearchSteps = 0;
+    SearchSteps++;
 
-        SearchState = astarsearch.SearchStep();
+    while( SearchState == AStar<SearchNode>::SEARCH_STATE_SEARCHING )
+    {
+        SearchState = aStar.SearchStep();
 
         SearchSteps++;
+    }
 
-		while( SearchState == AStarSearch<SearchNode>::SEARCH_STATE_SEARCHING )
-        {
-            SearchState = astarsearch.SearchStep();
+    if( SearchState == AStar<SearchNode>::SEARCH_STATE_SUCCEEDED )
+    {
+        cout << "\nSearch found goal state\n\n";
 
-            SearchSteps++;
-        }
+            SearchNode *node = aStar.GetSolutionStart();
 
-		if( SearchState == AStarSearch<SearchNode>::SEARCH_STATE_SUCCEEDED )
-		{
-			cout << "\nSearch found goal state\n\n";
+            int steps = 0;
 
-				SearchNode *node = astarsearch.GetSolutionStart();
+            node->PrintNodeInfo();
 
-				int steps = 0;
+            for( ;; )
+            {
+                node = aStar.GetSolutionNext();
 
-				node->PrintNodeInfo();
+                if( !node )
+                {
+                    break;
+                }
 
-				for( ;; )
-				{
-					node = astarsearch.GetSolutionNext();
+                node->PrintNodeInfo();
+                steps ++;
 
-					if( !node )
-					{
-						break;
-					}
+            };
 
-					node->PrintNodeInfo();
-					steps ++;
-				
-				};
+            cout << "\nSolution steps " << steps << endl;
 
-				cout << "\nSolution steps " << steps << endl;
+            // Once you're done with the solution you can free the nodes up
+            aStar.FreeSolutionNodes();
 
-				// Once you're done with the solution you can free the nodes up
-				astarsearch.FreeSolutionNodes();
 
-	
-		}
-		else if( SearchState == AStarSearch<SearchNode>::SEARCH_STATE_FAILED )
-		{
-			cout << "\nSearch terminated. Did not find goal state\n";
-		
-		}
+    }
+    else if( SearchState == AStar<SearchNode>::SEARCH_STATE_FAILED )
+    {
+        cout << "\nSearch terminated. Did not find goal state\n";
 
-		// Display the number of loops the search went through
-		cout << "SearchSteps : " << SearchSteps << "\n";
+    }
 
-		SearchCount ++;
+    // Display the number of loops the search went through
+    cout << "SearchSteps : " << SearchSteps << "\n";
 
-		astarsearch.EnsureMemoryFreed();
-	}
+    aStar.EnsureMemoryFreed();
 
     // After function call
     auto stop = high_resolution_clock::now();

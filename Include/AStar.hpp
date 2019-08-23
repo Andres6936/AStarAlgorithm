@@ -41,14 +41,8 @@
 
 using namespace std;
 
-// disable warning that debugging information has lines that are truncated
-// occurs in stl headers
-#if defined(WIN32) && defined(_WINDOWS)
-#pragma warning( disable : 4786 )
-#endif
-
 // The AStar search class. UserState is the users state space type
-template <class UserState> class AStarSearch
+template <class UserState> class AStar
 {
 
 public:
@@ -145,7 +139,7 @@ public: // methods
 
 
 	// constructor just initialises private data
-	AStarSearch()
+	AStar()
 	{
 	    m_State = SEARCH_STATE_NOT_INITIALISED;
 	    m_CurrentSolutionNode = nullptr;
@@ -293,7 +287,7 @@ public: // methods
 			{
 
                 // free the nodes that may previously have been added
-				for (AStarSearch::Node *successor: m_Successors)
+				for (AStar::Node *successor: m_Successors)
                 {
 				    m_AllocateNodeCount -= 1;
 				    delete successor;
@@ -310,7 +304,7 @@ public: // methods
 			}
 			
 			// Now handle each successor to the current node ...
-			for( AStarSearch::Node *successor: m_Successors )
+			for( AStar::Node *successor: m_Successors )
 			{
 
 				// 	The g value for this successor ...
