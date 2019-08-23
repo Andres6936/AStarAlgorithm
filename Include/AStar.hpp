@@ -685,32 +685,26 @@ private: // methods
 	void FreeAllNodes()
 	{
 		// iterate open list and delete all nodes
-		typename vector< Node * >::iterator iterOpen = m_OpenList.begin();
-
-		while( iterOpen != m_OpenList.end() )
-		{
-			Node *n = (*iterOpen);
-			FreeNode( n );
-
-			iterOpen ++;
+        for ( AStar::Node *iterOpen: m_OpenList )
+        {
+            m_AllocateNodeCount -= 1;
+            delete iterOpen;
 		}
 
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename vector< Node * >::iterator iterClosed;
-
-		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
-		{
-			Node *n = (*iterClosed);
-			FreeNode( n );
+        for ( AStar::Node *iterClosed: m_ClosedList )
+        {
+            m_AllocateNodeCount -= 1;
+            delete iterClosed;
 		}
 
 		m_ClosedList.clear();
 
 		// delete the goal
-
-		FreeNode(m_Goal);
+        m_AllocateNodeCount -= 1;
+        delete m_Goal;
 	}
 
 
