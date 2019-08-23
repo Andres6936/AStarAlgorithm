@@ -292,13 +292,12 @@ public: // methods
             if( !ret )
 			{
 
-			    typename vector< Node * >::iterator successor;
-
-				// free the nodes that may previously have been added 
-				for( successor = m_Successors.begin(); successor != m_Successors.end(); successor ++ )
-				{
-					FreeNode( (*successor) );
-				}
+                // free the nodes that may previously have been added
+				for (AStarSearch::Node *successor: m_Successors)
+                {
+				    m_AllocateNodeCount -= 1;
+				    delete successor;
+                }
 
 				m_Successors.clear(); // empty vector of successor nodes to n
 
@@ -311,11 +310,11 @@ public: // methods
 			}
 			
 			// Now handle each successor to the current node ...
-			for( typename vector< Node * >::iterator successor = m_Successors.begin(); successor != m_Successors.end(); successor ++ )
+			for( AStarSearch::Node *successor: m_Successors )
 			{
 
 				// 	The g value for this successor ...
-				float newg = n->g + n->m_UserState.GetCost( (*successor)->m_UserState );
+				float newg = n->g + n->m_UserState.GetCost( (successor)->m_UserState );
 
 				// Now we need to find whether the node is on the open or closed lists
 				// If it is but the node that is already on them is better (lower g)
@@ -327,7 +326,7 @@ public: // methods
 
 				for( openlist_result = m_OpenList.begin(); openlist_result != m_OpenList.end(); openlist_result ++ )
 				{
-					if( (*openlist_result)->m_UserState.IsSameState( (*successor)->m_UserState ) )
+					if( (*openlist_result)->m_UserState.IsSameState( (successor)->m_UserState ) )
 					{
 						break;					
 					}
@@ -340,7 +339,7 @@ public: // methods
 
 					if( (*openlist_result)->g <= newg )
 					{
-						FreeNode( (*successor) );
+						FreeNode( (successor) );
 
 						// the one on Open is cheaper than this one
 						continue;
@@ -351,7 +350,7 @@ public: // methods
 
 				for( closedlist_result = m_ClosedList.begin(); closedlist_result != m_ClosedList.end(); closedlist_result ++ )
 				{
-					if( (*closedlist_result)->m_UserState.IsSameState( (*successor)->m_UserState ) )
+					if( (*closedlist_result)->m_UserState.IsSameState( (successor)->m_UserState ) )
 					{
 						break;					
 					}
@@ -365,7 +364,7 @@ public: // methods
 					if( (*closedlist_result)->g <= newg )
 					{
 						// the one on Closed is cheaper than this one
-						FreeNode( (*successor) );
+						FreeNode( (successor) );
 
 						continue;
 					}
@@ -374,10 +373,10 @@ public: // methods
 				// This node is the best node so far with this particular state
 				// so lets keep it and set up its AStar specific data ...
 
-				(*successor)->parent = n;
-				(*successor)->g = newg;
-				(*successor)->h = (*successor)->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
-				(*successor)->f = (*successor)->g + (*successor)->h;
+				(successor)->parent = n;
+				(successor)->g = newg;
+				(successor)->h = (successor)->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
+				(successor)->f = (successor)->g + (successor)->h;
 
 				// Successor in closed list
 				// 1 - Update old version of this node in closed list
@@ -388,13 +387,13 @@ public: // methods
 				{
 					// Update closed node with successor node AStar data
 					//*(*closedlist_result) = *(*successor);
-					(*closedlist_result)->parent = (*successor)->parent;
-					(*closedlist_result)->g      = (*successor)->g;
-					(*closedlist_result)->h      = (*successor)->h;
-					(*closedlist_result)->f      = (*successor)->f;
+					(*closedlist_result)->parent = (successor)->parent;
+					(*closedlist_result)->g      = (successor)->g;
+					(*closedlist_result)->h      = (successor)->h;
+					(*closedlist_result)->f      = (successor)->f;
 
 					// Free successor node
-					FreeNode( (*successor) );
+					FreeNode( (successor) );
 
 					// Push closed node into open list 
 					m_OpenList.push_back( (*closedlist_result) );
@@ -420,13 +419,13 @@ public: // methods
 				{
 					// Update open node with successor node AStar data
 					//*(*openlist_result) = *(*successor);
-					(*openlist_result)->parent = (*successor)->parent;
-					(*openlist_result)->g      = (*successor)->g;
-					(*openlist_result)->h      = (*successor)->h;
-					(*openlist_result)->f      = (*successor)->f;
+					(*openlist_result)->parent = (successor)->parent;
+					(*openlist_result)->g      = (successor)->g;
+					(*openlist_result)->h      = (successor)->h;
+					(*openlist_result)->f      = (successor)->f;
 
 					// Free successor node
-					FreeNode( (*successor) );
+					FreeNode( (successor) );
 
 					// re-make the heap 
 					// make_heap rather than sort_heap is an essential bug fix
@@ -442,7 +441,7 @@ public: // methods
 				else
 				{
 					// Push successor node into open list
-					m_OpenList.push_back( (*successor) );
+					m_OpenList.push_back( (successor) );
 
 					// Sort back element into heap
 					push_heap( m_OpenList.begin(), m_OpenList.end(), HeapCompare_f() );
