@@ -225,32 +225,29 @@ int main( int argc, char *argv[] )
     {
         cout << "\nSearch found goal state\n\n";
 
-            SearchNode *node = aStar.GetSolutionStart();
+        SearchNode *node = aStar.GetSolutionStart();
 
-            int steps = 0;
+        int steps = 0;
+
+        node->PrintNodeInfo();
+
+        for( ;; )
+        {
+            node = aStar.GetSolutionNext();
+
+            if( !node )
+            {
+                break;
+            }
 
             node->PrintNodeInfo();
+            steps ++;
+        }
 
-            for( ;; )
-            {
-                node = aStar.GetSolutionNext();
+        cout << "\nSolution steps " << steps << endl;
 
-                if( !node )
-                {
-                    break;
-                }
-
-                node->PrintNodeInfo();
-                steps ++;
-
-            };
-
-            cout << "\nSolution steps " << steps << endl;
-
-            // Once you're done with the solution you can free the nodes up
-            aStar.FreeSolutionNodes();
-
-
+        // Once you're done with the solution you can free the nodes up
+        aStar.FreeSolutionNodes();
     }
     else if( SearchState == AStar<SearchNode>::SEARCH_STATE_FAILED )
     {
