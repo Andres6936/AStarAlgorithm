@@ -278,9 +278,18 @@ public: // methods
 
 			// User provides this functions and uses AddSuccessor to add each successor of
 			// node 'n' to m_Successors
-			bool ret = n->m_UserState.GetSuccessors( this, n->parent ? &n->parent->m_UserState : NULL ); 
+			bool ret;
 
-			if( !ret )
+            if ( n->parent )
+            {
+                ret = n->m_UserState.GetSuccessors( this, &n->parent->m_UserState );
+            }
+            else
+            {
+                ret = n->m_UserState.GetSuccessors( this, NULL );
+            }
+
+            if( !ret )
 			{
 
 			    typename vector< Node * >::iterator successor;
