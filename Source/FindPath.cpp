@@ -93,11 +93,8 @@ public:
 
 bool SearchNode::IsSameState( SearchNode &rhs )
 {
-
 	// same state in a maze search is simply when (x,y) are the same
-    return ( x == rhs.x ) &&
-           ( y == rhs.y );
-
+    return ( x == rhs.x ) && ( y == rhs.y );
 }
 
 void SearchNode::PrintNodeInfo()
@@ -115,10 +112,7 @@ float SearchNode::GoalDistanceEstimate( SearchNode &nodeGoal )
 
 bool SearchNode::IsGoal( SearchNode &nodeGoal )
 {
-
-    return ( x == nodeGoal.x ) &&
-           ( y == nodeGoal.y );
-
+    return ( x == nodeGoal.x ) && ( y == nodeGoal.y );
 }
 
 // This generates the successors to the given Node. It uses a helper function called
@@ -128,13 +122,13 @@ bool SearchNode::IsGoal( SearchNode &nodeGoal )
 bool SearchNode::GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *parent_node )
 {
 
-	int parent_x = -1; 
-	int parent_y = -1; 
+	int parentX = -1;
+	int parentY = -1;
 
 	if( parent_node )
 	{
-		parent_x = parent_node->x;
-		parent_y = parent_node->y;
+        parentX = parent_node->x;
+        parentY = parent_node->y;
 	}
 	
 
@@ -142,29 +136,25 @@ bool SearchNode::GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *pare
 
 	// push each possible move except allowing the search to go backwards
 
-	if( (GetMap( x-1, y ) < 9) && !((parent_x == x-1) && (parent_y == y))
-	  ) 
+	if( (GetMap( x-1, y ) < 9) && !(( parentX == x - 1) && ( parentY == y)))
 	{
 		NewNode = SearchNode( x - 1, y );
 		astarsearch->AddSuccessor( NewNode );
 	}
 
-    if( (GetMap( x+1, y ) < 9) && !((parent_x == x+1) && (parent_y == y))
-            )
+    if( (GetMap( x+1, y ) < 9) && !(( parentX == x + 1) && ( parentY == y)))
     {
         NewNode = SearchNode( x + 1, y );
         astarsearch->AddSuccessor( NewNode );
     }
 
-    if( (GetMap( x, y-1 ) < 9) && !((parent_x == x) && (parent_y == y-1))
-	  ) 
+    if( (GetMap( x, y-1 ) < 9) && !(( parentX == x) && ( parentY == y - 1)))
 	{
         NewNode = SearchNode( x, y - 1 );
         astarsearch->AddSuccessor( NewNode );
     }
 		
-	if( (GetMap( x, y+1 ) < 9) && !((parent_x == x) && (parent_y == y+1))
-		)
+	if( (GetMap( x, y+1 ) < 9) && !(( parentX == x) && ( parentY == y + 1)))
 	{
 		NewNode = SearchNode( x, y + 1 );
 		astarsearch->AddSuccessor( NewNode );
@@ -180,7 +170,6 @@ bool SearchNode::GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *pare
 float SearchNode::GetCost( SearchNode &successor )
 {
 	return (float) GetMap( x, y );
-
 }
 
 
