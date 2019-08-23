@@ -242,14 +242,14 @@ public: // methods
 				Node *nodeChild = m_Goal;
 				Node *nodeParent = m_Goal->parent;
 
-				do 
+				do
 				{
 					nodeParent->child = nodeChild;
 
 					nodeChild = nodeParent;
 					nodeParent = nodeParent->parent;
-				
-				} 
+
+				}
 				while( nodeChild != m_Start ); // Start is always the first node by definition
 
 			}
@@ -720,46 +720,32 @@ private: // methods
 	void FreeUnusedNodes()
 	{
 		// iterate open list and delete unused nodes
-		typename vector< Node * >::iterator iterOpen = m_OpenList.begin();
-
-		while( iterOpen != m_OpenList.end() )
+		for( AStar::Node *iterOpen: m_OpenList)
 		{
-			Node *n = (*iterOpen);
-
-			if( !n->child )
+			if( !iterOpen->child )
 			{
-				FreeNode( n );
-
-				n = NULL;
+				m_AllocateNodeCount -= 1;
+				delete iterOpen;
 			}
-
-			iterOpen ++;
 		}
 
 		m_OpenList.clear();
 
 		// iterate closed list and delete unused nodes
-		typename vector< Node * >::iterator iterClosed;
-
-		for( iterClosed = m_ClosedList.begin(); iterClosed != m_ClosedList.end(); iterClosed ++ )
+		for( AStar::Node *iterClosed: m_ClosedList )
 		{
-			Node *n = (*iterClosed);
-
-			if( !n->child )
+			if( !iterClosed->child )
 			{
-				FreeNode( n );
-				n = NULL;
-
+                m_AllocateNodeCount -= 1;
+                delete iterClosed;
 			}
 		}
 
 		m_ClosedList.clear();
-
 	}
 
     void FreeNode( Node *node )
 	{
-
 		m_AllocateNodeCount --;
 		delete node;
 	}
