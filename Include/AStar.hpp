@@ -381,10 +381,10 @@ public: // methods
 				{
 					// Update closed node with successor node AStar data
 					//*(*closedlist_result) = *(*successor);
-                    *closedlist_result->parent = successor->parent;
-                    *closedlist_result->g = successor->g;
-                    *closedlist_result->h = successor->h;
-                    *closedlist_result->f = successor->f;
+                    ( *closedlist_result )->parent = successor->parent;
+                    ( *closedlist_result )->g = successor->g;
+                    ( *closedlist_result )->h = successor->h;
+                    ( *closedlist_result )->f = successor->f;
 
 					// Free successor node
                     FreeNode( successor );
@@ -413,10 +413,10 @@ public: // methods
 				{
 					// Update open node with successor node AStar data
 					//*(*openlist_result) = *(*successor);
-                    *openlist_result->parent = successor->parent;
-                    *openlist_result->g = successor->g;
-                    *openlist_result->h = successor->h;
-                    *openlist_result->f = successor->f;
+                    ( *openlist_result )->parent = successor->parent;
+                    ( *openlist_result )->g = successor->g;
+                    ( *openlist_result )->h = successor->h;
+                    ( *openlist_result )->f = successor->f;
 
 					// Free successor node
                     FreeNode( successor );
@@ -568,109 +568,6 @@ public: // methods
 
 		return NULL;
 	}
-
-	// Get final cost of solution
-	// Returns FLT_MAX if goal is not defined or there is no solution
-	float GetSolutionCost()
-	{
-		if( m_Goal && m_State == SEARCH_STATE_SUCCEEDED )
-		{
-			return m_Goal->g;
-		}
-		else
-		{
-			return FLT_MAX;
-		}
-	}
-
-	// For educational use and debugging it is useful to be able to view
-	// the open and closed list at each step, here are two functions to allow that.
-
-	UserState *GetOpenListStart()
-	{
-		float f,g,h;
-		return GetOpenListStart( f,g,h );
-	}
-
-	UserState *GetOpenListStart( float &f, float &g, float &h )
-	{
-		iterDbgOpen = m_OpenList.begin();
-		if( iterDbgOpen != m_OpenList.end() )
-		{
-			f = (*iterDbgOpen)->f;
-			g = (*iterDbgOpen)->g;
-			h = (*iterDbgOpen)->h;
-			return &(*iterDbgOpen)->m_UserState;
-		}
-
-		return NULL;
-	}
-
-	UserState *GetOpenListNext()
-	{
-		float f,g,h;
-		return GetOpenListNext( f,g,h );
-	}
-
-	UserState *GetOpenListNext( float &f, float &g, float &h )
-	{
-		iterDbgOpen++;
-		if( iterDbgOpen != m_OpenList.end() )
-		{
-			f = (*iterDbgOpen)->f;
-			g = (*iterDbgOpen)->g;
-			h = (*iterDbgOpen)->h;
-			return &(*iterDbgOpen)->m_UserState;
-		}
-
-		return NULL;
-	}
-
-	UserState *GetClosedListStart()
-	{
-		float f,g,h;
-		return GetClosedListStart( f,g,h );
-	}
-
-	UserState *GetClosedListStart( float &f, float &g, float &h )
-	{
-		iterDbgClosed = m_ClosedList.begin();
-		if( iterDbgClosed != m_ClosedList.end() )
-		{
-			f = (*iterDbgClosed)->f;
-			g = (*iterDbgClosed)->g;
-			h = (*iterDbgClosed)->h;
-
-			return &(*iterDbgClosed)->m_UserState;
-		}
-
-		return NULL;
-	}
-
-	UserState *GetClosedListNext()
-	{
-		float f,g,h;
-		return GetClosedListNext( f,g,h );
-	}
-
-	UserState *GetClosedListNext( float &f, float &g, float &h )
-	{
-		iterDbgClosed++;
-		if( iterDbgClosed != m_ClosedList.end() )
-		{
-			f = (*iterDbgClosed)->f;
-			g = (*iterDbgClosed)->g;
-			h = (*iterDbgClosed)->h;
-
-			return &(*iterDbgClosed)->m_UserState;
-		}
-
-		return NULL;
-	}
-
-	// Get the number of steps
-
-	int GetStepCount() { return m_Steps; }
 
 private: // methods
 
