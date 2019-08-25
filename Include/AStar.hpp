@@ -308,7 +308,7 @@ public: // methods
 			{
 
 				// 	The g value for this successor ...
-				float newg = n->g + n->m_UserState.GetCost( (successor)->m_UserState );
+                float newg = n->g + n->m_UserState.GetCost( successor->m_UserState );
 
 				// Now we need to find whether the node is on the open or closed lists
 				// If it is but the node that is already on them is better (lower g)
@@ -367,10 +367,10 @@ public: // methods
 				// This node is the best node so far with this particular state
 				// so lets keep it and set up its AStar specific data ...
 
-				(successor)->parent = n;
-				(successor)->g = newg;
-				(successor)->h = (successor)->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
-				(successor)->f = (successor)->g + (successor)->h;
+                successor->parent = n;
+                successor->g = newg;
+                successor->h = successor->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
+                successor->f = successor->g + successor->h;
 
 				// Successor in closed list
 				// 1 - Update old version of this node in closed list
@@ -381,13 +381,13 @@ public: // methods
 				{
 					// Update closed node with successor node AStar data
 					//*(*closedlist_result) = *(*successor);
-					(*closedlist_result)->parent = (successor)->parent;
-					(*closedlist_result)->g      = (successor)->g;
-					(*closedlist_result)->h      = (successor)->h;
-					(*closedlist_result)->f      = (successor)->f;
+                    *closedlist_result->parent = successor->parent;
+                    *closedlist_result->g = successor->g;
+                    *closedlist_result->h = successor->h;
+                    *closedlist_result->f = successor->f;
 
 					// Free successor node
-					FreeNode( (successor) );
+                    FreeNode( successor );
 
 					// Push closed node into open list 
 					m_OpenList.push_back( (*closedlist_result) );
@@ -413,13 +413,13 @@ public: // methods
 				{
 					// Update open node with successor node AStar data
 					//*(*openlist_result) = *(*successor);
-					(*openlist_result)->parent = (successor)->parent;
-					(*openlist_result)->g      = (successor)->g;
-					(*openlist_result)->h      = (successor)->h;
-					(*openlist_result)->f      = (successor)->f;
+                    *openlist_result->parent = successor->parent;
+                    *openlist_result->g = successor->g;
+                    *openlist_result->h = successor->h;
+                    *openlist_result->f = successor->f;
 
 					// Free successor node
-					FreeNode( (successor) );
+                    FreeNode( successor );
 
 					// re-make the heap 
 					// make_heap rather than sort_heap is an essential bug fix
@@ -449,8 +449,7 @@ public: // methods
 
 		} // end else (not goal so expand)
 
- 		return m_State; // Succeeded bool is false at this point. 
-
+        return m_State; // Succeeded bool is false at this point.
 	}
 
 	// User calls this to add a successor to a list of successors
@@ -672,11 +671,6 @@ public: // methods
 	// Get the number of steps
 
 	int GetStepCount() { return m_Steps; }
-
-	void EnsureMemoryFreed()
-	{
-
-	}
 
 private: // methods
 

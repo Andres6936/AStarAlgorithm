@@ -28,27 +28,27 @@ constexpr short MAP_HEIGHT = 20;
 constexpr int worldMap[MAP_WIDTH * MAP_HEIGHT ] =
 {
 
-// 0001020304050607080910111213141516171819
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,   // 00
-	1,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,1,   // 01
-	1,9,9,1,1,9,9,9,1,9,1,9,1,9,1,9,9,9,1,1,   // 02
-	1,9,9,1,1,9,9,9,1,9,1,9,1,9,1,9,9,9,1,1,   // 03
-	1,9,1,1,1,1,9,9,1,9,1,9,1,1,1,1,9,9,1,1,   // 04
-	1,9,1,1,9,1,1,1,1,9,1,1,1,1,9,1,1,1,1,1,   // 05
-	1,9,9,9,9,1,1,1,1,1,1,9,9,9,9,1,1,1,1,1,   // 06
-	1,9,9,9,9,9,9,9,9,1,1,1,9,9,9,9,9,9,9,1,   // 07
-	1,9,1,1,1,1,1,1,1,1,1,9,1,1,1,1,1,1,1,1,   // 08
-	1,9,1,9,9,9,9,9,9,9,1,1,9,9,9,9,9,9,9,1,   // 09
-	1,9,1,1,1,1,9,1,1,9,1,1,1,1,1,1,1,1,1,1,   // 10
-	1,9,9,9,9,9,1,9,1,9,1,9,9,9,9,9,1,1,1,1,   // 11
-	1,9,1,9,1,9,9,9,1,9,1,9,1,9,1,9,9,9,1,1,   // 12
-	1,9,1,9,1,9,9,9,1,9,1,9,1,9,1,9,9,9,1,1,   // 13
-	1,9,1,1,1,1,9,9,1,9,1,9,1,1,1,1,9,9,1,1,   // 14
-	1,9,1,1,9,1,1,1,1,9,1,1,1,1,9,1,1,1,1,1,   // 15
-	1,9,9,9,9,1,1,1,1,1,1,9,9,9,9,1,1,1,1,1,   // 16
-	1,1,9,9,9,9,9,9,9,1,1,1,9,9,9,1,9,9,9,9,   // 17
-	1,9,1,1,1,1,1,1,1,1,1,9,1,1,1,1,1,1,1,1,   // 18
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,   // 19
+//  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   // 00
+                1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,   // 01
+                1, 9, 9, 1, 1, 9, 9, 9, 1, 9, 1, 9, 1, 9, 1, 9, 9, 9, 1, 1,   // 02
+                1, 9, 9, 1, 1, 9, 9, 9, 1, 9, 1, 9, 1, 9, 1, 9, 9, 9, 1, 1,   // 03
+                1, 9, 1, 1, 1, 1, 9, 9, 1, 9, 1, 9, 1, 1, 1, 1, 9, 9, 1, 1,   // 04
+                1, 9, 1, 1, 9, 1, 1, 1, 1, 9, 1, 1, 1, 1, 9, 1, 1, 1, 1, 1,   // 05
+                1, 9, 9, 9, 9, 1, 1, 1, 1, 1, 1, 9, 9, 9, 9, 1, 1, 1, 1, 1,   // 06
+                1, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 1, 9, 9, 9, 9, 9, 9, 9, 1,   // 07
+                1, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9, 1, 1, 1, 1, 1, 1, 1, 1,   // 08
+                1, 9, 1, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 1,   // 09
+                1, 9, 1, 1, 1, 1, 9, 1, 1, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   // 10
+                1, 9, 9, 9, 9, 9, 1, 9, 1, 9, 1, 9, 9, 9, 9, 9, 1, 1, 1, 1,   // 11
+                1, 9, 1, 9, 1, 9, 9, 9, 1, 9, 1, 9, 1, 9, 1, 9, 9, 9, 1, 1,   // 12
+                1, 9, 1, 9, 1, 9, 9, 9, 1, 9, 1, 9, 1, 9, 1, 9, 9, 9, 1, 1,   // 13
+                1, 9, 1, 1, 1, 1, 9, 9, 1, 9, 1, 9, 1, 1, 1, 1, 9, 9, 1, 1,   // 14
+                1, 9, 1, 1, 9, 1, 1, 1, 1, 9, 1, 1, 1, 1, 9, 1, 1, 1, 1, 1,   // 15
+                1, 9, 9, 9, 9, 1, 1, 1, 1, 1, 1, 9, 9, 9, 9, 1, 1, 1, 1, 1,   // 16
+                1, 1, 9, 9, 9, 9, 9, 9, 9, 1, 1, 1, 9, 9, 9, 1, 9, 9, 9, 9,   // 17
+                1, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9, 1, 1, 1, 1, 1, 1, 1, 1,   // 18
+                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   // 19
 
 };
 
@@ -82,7 +82,8 @@ public:
 
 	float GoalDistanceEstimate( SearchNode &nodeGoal );
 	bool IsGoal( SearchNode &nodeGoal );
-	bool GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *parent_node );
+
+    bool GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *parent_node );
 	float GetCost( SearchNode &successor );
 	bool IsSameState( SearchNode &rhs );
 
@@ -119,7 +120,7 @@ bool SearchNode::IsGoal( SearchNode &nodeGoal )
 // AddSuccessor to give the successors to the AStar class. The A* specific initialisation
 // is done for each node internally, so here you just set the state information that
 // is specific to the application
-bool SearchNode::GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *parent_node )
+bool SearchNode::GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *parent_node )
 {
 
 	int parentX = -1;
@@ -139,25 +140,25 @@ bool SearchNode::GetSuccessors( AStar<SearchNode> *astarsearch, SearchNode *pare
 	if( (GetMap( x-1, y ) < 9) && !(( parentX == x - 1) && ( parentY == y)))
 	{
 		NewNode = SearchNode( x - 1, y );
-		astarsearch->AddSuccessor( NewNode );
+        nAStar->AddSuccessor( NewNode );
 	}
 
     if( (GetMap( x+1, y ) < 9) && !(( parentX == x + 1) && ( parentY == y)))
     {
         NewNode = SearchNode( x + 1, y );
-        astarsearch->AddSuccessor( NewNode );
+        nAStar->AddSuccessor( NewNode );
     }
 
     if( (GetMap( x, y-1 ) < 9) && !(( parentX == x) && ( parentY == y - 1)))
 	{
         NewNode = SearchNode( x, y - 1 );
-        astarsearch->AddSuccessor( NewNode );
+        nAStar->AddSuccessor( NewNode );
     }
 		
 	if( (GetMap( x, y+1 ) < 9) && !(( parentX == x) && ( parentY == y + 1)))
 	{
 		NewNode = SearchNode( x, y + 1 );
-		astarsearch->AddSuccessor( NewNode );
+        nAStar->AddSuccessor( NewNode );
 	}	
 
 	return true;
@@ -207,10 +208,8 @@ int main( int argc, char *argv[] )
 
     aStar.SetStartAndGoalStates( nodeStart, nodeEnd );
 
-    unsigned int SearchState;
+    unsigned int SearchState = aStar.SearchStep( );
     unsigned int SearchSteps = 0;
-
-    SearchState = aStar.SearchStep();
 
     SearchSteps++;
 
@@ -257,8 +256,6 @@ int main( int argc, char *argv[] )
 
     // Display the number of loops the search went through
     cout << "SearchSteps : " << SearchSteps << "\n";
-
-    aStar.EnsureMemoryFreed();
 
     // After function call
     auto stop = high_resolution_clock::now();
