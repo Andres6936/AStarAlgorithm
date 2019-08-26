@@ -83,7 +83,7 @@ public:
 	float GoalDistanceEstimate( SearchNode &nodeGoal );
 	bool IsGoal( SearchNode &nodeGoal );
 
-    bool GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *parent_node );
+    bool GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *nParentNode );
 	float GetCost( SearchNode &successor );
 	bool IsSameState( SearchNode &rhs );
 
@@ -104,8 +104,7 @@ void SearchNode::PrintNodeInfo()
 }
 
 // Here's the heuristic function that estimates the distance from a Node
-// to the Goal. 
-
+// to the Goal. The distance is estimate with Manhattan distance.
 float SearchNode::GoalDistanceEstimate( SearchNode &nodeGoal )
 {
 	return abs(x - nodeGoal.x) + abs(y - nodeGoal.y);
@@ -120,16 +119,16 @@ bool SearchNode::IsGoal( SearchNode &nodeGoal )
 // AddSuccessor to give the successors to the AStar class. The A* specific initialisation
 // is done for each node internally, so here you just set the state information that
 // is specific to the application
-bool SearchNode::GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *parent_node )
+bool SearchNode::GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *nParentNode )
 {
 
 	int parentX = -1;
 	int parentY = -1;
 
-	if( parent_node )
-	{
-        parentX = parent_node->x;
-        parentY = parent_node->y;
+    if ( nParentNode )
+    {
+        parentX = nParentNode->x;
+        parentY = nParentNode->y;
 	}
 	
 
@@ -137,25 +136,25 @@ bool SearchNode::GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *parent_n
 
 	// push each possible move except allowing the search to go backwards
 
-	if( (GetMap( x-1, y ) < 9) && !(( parentX == x - 1) && ( parentY == y)))
+    if (( GetMap( x - 1, y ) < 9 ) && !( parentX == x - 1 && parentY == y ))
 	{
 		NewNode = SearchNode( x - 1, y );
         nAStar->AddSuccessor( NewNode );
 	}
 
-    if( (GetMap( x+1, y ) < 9) && !(( parentX == x + 1) && ( parentY == y)))
+    if (( GetMap( x + 1, y ) < 9 ) && !( parentX == x + 1 && parentY == y ))
     {
         NewNode = SearchNode( x + 1, y );
         nAStar->AddSuccessor( NewNode );
     }
 
-    if( (GetMap( x, y-1 ) < 9) && !(( parentX == x) && ( parentY == y - 1)))
+    if (( GetMap( x, y - 1 ) < 9 ) && !( parentX == x && parentY == y - 1 ))
 	{
         NewNode = SearchNode( x, y - 1 );
         nAStar->AddSuccessor( NewNode );
     }
-		
-	if( (GetMap( x, y+1 ) < 9) && !(( parentX == x) && ( parentY == y + 1)))
+
+    if (( GetMap( x, y + 1 ) < 9 ) && !( parentX == x && parentY == y + 1 ))
 	{
 		NewNode = SearchNode( x, y + 1 );
         nAStar->AddSuccessor( NewNode );
@@ -167,10 +166,9 @@ bool SearchNode::GetSuccessors( AStar <SearchNode> *nAStar, SearchNode *parent_n
 // given this node, what does it cost to move to successor. In the case
 // of our map the answer is the map terrain value at this node since that is 
 // conceptually where we're moving
-
 float SearchNode::GetCost( SearchNode &successor )
 {
-	return (float) GetMap( x, y );
+    return ( float ) GetMap( successor.x, successor.y );
 }
 
 
@@ -195,14 +193,10 @@ int main( int argc, char *argv[] )
 	AStar<SearchNode> aStar;
 
     // Create a start state
-    SearchNode nodeStart;
-    nodeStart.x = rand()%MAP_WIDTH;
-    nodeStart.y = rand()%MAP_HEIGHT;
+    SearchNode nodeStart( 3, 5 );
 
     // Define the goal state
-    SearchNode nodeEnd;
-    nodeEnd.x = rand()%MAP_WIDTH;
-    nodeEnd.y = rand()%MAP_HEIGHT;
+    SearchNode nodeEnd( 17, 15 );
 
     // Set Start and goal states
 

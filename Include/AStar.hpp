@@ -41,7 +41,19 @@
 
 using namespace std;
 
-// The AStar search class. UserState is the users state space type
+/**
+ * The main class is called AStar, and is a template class.
+ * I chose to use templates because this enables the user to specialise
+ * the AStarSearch class to their user state in an efficient way.
+ *
+ * Originally I used inheritence from a virtual base class, but
+ * that lead to the use of type casts in many places to convert from
+ * the base Node to the user's node. Also templates are resolved
+ * at compile time rather than runtime and this makes them more
+ * efficient and require less memory.
+ *
+ * The AStar search class. UserState is the users state space type
+ */
 template <class UserState> class AStar
 {
 
@@ -78,9 +90,11 @@ public:
 private: // data
 
     // Heap (simple vector but used as a heap, cf. Steve Rabin's game gems article)
+    // This is where we will remember which nodes we haven't yet expanded.
     vector< Node *> m_OpenList;
 
     // Closed list is a vector.
+    // This is where we will remember which nodes we have expanded.
     vector< Node * > m_ClosedList;
 
     // Successors is a vector filled out by the user each type successors to a node
@@ -98,11 +112,6 @@ private: // data
     Node *m_Goal;
 
     Node *m_CurrentSolutionNode;
-
-    //Debug : need to keep these two iterators around
-    // for the user Dbg functions
-    typename vector< Node * >::iterator iterDbgOpen;
-    typename vector< Node * >::iterator iterDbgClosed;
 
     // debugging : count memory allocation and free's
     int m_AllocateNodeCount;
@@ -124,7 +133,7 @@ public: // data
 	// For sorting the heap the STL needs compare function that lets us compare
 	// the f value of two nodes
 
-	class HeapCompare_f 
+    class HeapCompare_f
 	{
 		public:
 
@@ -178,14 +187,11 @@ public: // methods
 		m_Start->g = 0; 
 		m_Start->h = m_Start->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
 		m_Start->f = m_Start->g + m_Start->h;
-		m_Start->parent = 0;
+        m_Start->parent = nullptr;
 
 		// Push the start node on the Open list
 
 		m_OpenList.push_back( m_Start ); // heap now unsorted
-
-		// Sort back element into heap
-		push_heap( m_OpenList.begin(), m_OpenList.end() );
 
 		// Initialise counter for search steps
 		m_Steps = 0;
@@ -308,7 +314,7 @@ public: // methods
 			{
 
 				// 	The g value for this successor ...
-                float newg = n->g + n->m_UserState.GetCost( successor->m_UserState );
+                float ValueGSuccessor = n->g + n->m_UserState.GetCost( successor->m_UserState );
 
 				// Now we need to find whether the node is on the open or closed lists
 				// If it is but the node that is already on them is better (lower g)
@@ -320,7 +326,7 @@ public: // methods
 
 				for( openlist_result = m_OpenList.begin(); openlist_result != m_OpenList.end(); openlist_result ++ )
 				{
-					if( (*openlist_result)->m_UserState.IsSameState( (successor)->m_UserState ) )
+                    if (( *openlist_result )->m_UserState.IsSameState( successor->m_UserState ))
 					{
 						break;					
 					}
@@ -331,7 +337,7 @@ public: // methods
 
 					// we found this state on open
 
-					if( (*openlist_result)->g <= newg )
+                    if (( *openlist_result )->g <= ValueGSuccessor )
 					{
 						FreeNode( (successor) );
 
@@ -355,7 +361,7 @@ public: // methods
 
 					// we found this state on closed
 
-					if( (*closedlist_result)->g <= newg )
+                    if (( *closedlist_result )->g <= ValueGSuccessor )
 					{
 						// the one on Closed is cheaper than this one
 						FreeNode( (successor) );
@@ -368,7 +374,7 @@ public: // methods
 				// so lets keep it and set up its AStar specific data ...
 
                 successor->parent = n;
-                successor->g = newg;
+                successor->g = ValueGSuccessor;
                 successor->h = successor->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
                 successor->f = successor->g + successor->h;
 
