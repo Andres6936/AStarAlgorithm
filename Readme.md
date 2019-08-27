@@ -1,10 +1,10 @@
-astar-algorithm-cpp
-===================
+AStar-Algorithm
+===============
 
 Summary
 -------
 
-This code is an efficient implementation in C++ and C# of the A* algorithm,
+This code is an efficient implementation in C++ of the A* algorithm,
 designed to be used from high performance realtime applications (video games)
 and with an optional fast memory allocation scheme.   
 
@@ -17,9 +17,6 @@ Sadly Nils Nillson passed away in 2019, his work is much appreciated.
 Contributions: 
 
 * @justinhj Original code and tutorial
-* @ScaryG C# port
-* @Rasoul for submitting the path to Bucharest. Sample from Artificial Intelligence: A Modern Approach 
-* @sergiosota For fixing a number of issues related to memory management
 
 License
 =======
@@ -52,7 +49,14 @@ the code please contact me.
 Compilation
 ===========
 
-Enter the cpp folder and run make
+You need CMake 3.1 or above
+
+```
+cmake CMakeLists.txt
+make
+```
+
+Execute the sample with `./FindPath`
 
 Introduction
 ============
@@ -61,45 +65,13 @@ This implementation is intended to be simple to read yet fairly
 efficient. To build it you can compile, with any recent C++ compiler,
 the following files :
 
-For 8-puzzle solver
+For path finder
 
-* 8puzzle.cpp
-* stlastar.h
-* optionally fsa.h
-
-Command line 
-
-8puzzle with no arguments runs with one of the boards in the cpp file, you can
-select the one you want changing the conditional compiliation instructions. Or if you
-prefer pass in a board on the command line using digits for the tile positions, where
-zero is the space. The board runs from left to right, each row at a time:
-	
-    8puzzle 013824765
-
-For path finder 
-* findpath.cpp
-* stlastar.h
-* optionally fsa.h
+* FindPath.cpp
+* AStar.hpp
 
 pathfind has no arguments. You can edit the simple map in pathfind.cpp and the start 
 and goal co-ordinates to experiement with the pathfinder.
-
-Fixed size allocator notes: As mentioned briefly in the tutorial you can enable
-and disable the faster memory allocation.
-
-This allocates a fixed size block of memory, so you have to specify this size
-with the astar constructor. You need to enlarge it if you hit an out of memory
-assert during the search.
-
-Compilation notes:
-
-Microsoft Visual C++ : Confirmed working with version 8.0.50727 with some
-deprecation warnings I'm going to leave the deprecation warnings in so that it
-still works cleanly with GCC. 
-TODO Make a non-deprecated compliant version using compiler checking
-
-Compiled with:
-Apple LLVM version 6.0 (clang-600.0.51) (based on LLVM 3.5svn)
 
 Please let me know if it doesn't work for you and I will try to help. I cannot
 help if you are using an old compiler such as Turbo C++, since I update the code
@@ -107,4 +79,4 @@ to meet Ansi Standard C++ as required.
 
 Cheers!
 
-Justin
+Justin and recently Andrés (@Andres6936)
