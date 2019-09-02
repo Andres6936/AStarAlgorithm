@@ -202,17 +202,7 @@ int main( int argc, char *argv[] )
 
     aStar.SetStartAndGoalStates( nodeStart, nodeEnd );
 
-    unsigned int SearchState = aStar.SearchStep( );
-    unsigned int SearchSteps = 0;
-
-    SearchSteps++;
-
-    while( SearchState == AStar<SearchNode>::SEARCH_STATE_SEARCHING )
-    {
-        SearchState = aStar.SearchStep();
-
-        SearchSteps++;
-    }
+    unsigned int SearchState = aStar.ComputePath( );
 
     if( SearchState == AStar<SearchNode>::SEARCH_STATE_SUCCEEDED )
     {
@@ -249,7 +239,7 @@ int main( int argc, char *argv[] )
     }
 
     // Display the number of loops the search went through
-    cout << "SearchSteps : " << SearchSteps << "\n";
+    // cout << "SearchSteps : " << SearchSteps << "\n";
 
     // After function call
     auto stop = high_resolution_clock::now();
