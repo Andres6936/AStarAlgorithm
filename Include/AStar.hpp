@@ -457,17 +457,10 @@ public: // methods
 		Node *node = new Node();
 		m_AllocateNodeCount += 1;
 
-		if( node )
-		{
-			node->m_UserState = State;
-
-			m_Successors.push_back( node );
-
-			return true;
-		}
-
-		return false;
-	}
+        node->m_UserState = State;
+        m_Successors.push_back( node );
+        return true;
+    }
 
 	// Free the solution nodes
 	// This is done to clean up all used Node memory when you are done with the
