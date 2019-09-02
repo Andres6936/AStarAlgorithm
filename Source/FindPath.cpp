@@ -201,10 +201,9 @@ int main( int argc, char *argv[] )
     // Set Start and goal states
 
     aStar.SetStartAndGoalStates( nodeStart, nodeEnd );
+    aStar.ComputePath( );
 
-    unsigned int SearchState = aStar.ComputePath( );
-
-    if( SearchState == AStar<SearchNode>::SEARCH_STATE_SUCCEEDED )
+    if ( aStar.GetSearchState( ) == SearchState::SUCCEEDED )
     {
         cout << "\nSearch found goal state\n\n";
 
@@ -232,7 +231,7 @@ int main( int argc, char *argv[] )
         // Once you're done with the solution you can free the nodes up
         aStar.FreeSolutionNodes();
     }
-    else if( SearchState == AStar<SearchNode>::SEARCH_STATE_FAILED )
+    else if ( aStar.GetSearchState( ) == SearchState::FAILED )
     {
         cout << "\nSearch terminated. Did not find goal state\n";
 

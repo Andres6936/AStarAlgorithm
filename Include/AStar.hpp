@@ -39,6 +39,15 @@
 #include <vector>
 #include <cfloat>
 
+enum class SearchState : short
+{
+    NOT_INITIALISED,
+    OUT_OF_MEMORY,
+    SEARCHING,
+    SUCCEEDED,
+    FAILED
+};
+
 using namespace std;
 
 /**
@@ -102,7 +111,7 @@ private: // data
     vector< Node * > m_Successors;
 
     // State
-    unsigned int m_State;
+    SearchState m_State;
 
     // Counts steps
     int m_Steps;
@@ -117,16 +126,6 @@ private: // data
     int m_AllocateNodeCount;
 
 public: // data
-
-	enum
-	{
-		SEARCH_STATE_NOT_INITIALISED,
-		SEARCH_STATE_SEARCHING,
-		SEARCH_STATE_SUCCEEDED,
-		SEARCH_STATE_FAILED,
-		SEARCH_STATE_OUT_OF_MEMORY,
-		SEARCH_STATE_INVALID
-	};
 
 	// For sorting the heap the STL needs compare function that lets us compare
 	// the f value of two nodes
@@ -148,7 +147,7 @@ public: // methods
 	// constructor just initialises private data
 	AStar()
 	{
-	    m_State = SEARCH_STATE_NOT_INITIALISED;
+        m_State = SearchState::NOT_INITIALISED;
 	    m_CurrentSolutionNode = nullptr;
 	    m_AllocateNodeCount = 0;
 	    m_Steps = 0;
@@ -168,7 +167,7 @@ public: // methods
 		m_Start->m_UserState = Start;
 		m_Goal->m_UserState = Goal;
 
-		m_State = SEARCH_STATE_SEARCHING;
+        m_State = SearchState::SEARCHING;
 		
 		// Initialise the AStar specific parts of the Start Node
 		// The user only needs fill out the state information
@@ -186,22 +185,20 @@ public: // methods
 		m_Steps = 0;
 	}
 
-	// Advances search one step 
-    unsigned int ComputePath( )
+    // Advances search
+    SearchState ComputePath( )
 	{
 		// Firstly break if the user has not initialised the search
-		assert( (m_State > SEARCH_STATE_NOT_INITIALISED) &&
-				(m_State < SEARCH_STATE_INVALID) );
+        assert( m_State != SearchState::NOT_INITIALISED );
+        assert( m_State == SearchState::SEARCHING );
 
 		// Next I want it to be safe to do a searchstep once the search has succeeded...
-		if( (m_State == SEARCH_STATE_SUCCEEDED) ||
-			(m_State == SEARCH_STATE_FAILED) 
-		  )
+        if ( m_State == SearchState::SUCCEEDED || m_State == SearchState::FAILED )
 		{
 			return m_State; 
 		}
 
-        while ( m_State == SEARCH_STATE_SEARCHING )
+        while ( m_State == SearchState::SEARCHING )
         {
             // Failure is defined as emptying the open list as there is nothing left to
             // search...
@@ -209,7 +206,7 @@ public: // methods
             if ( m_OpenList.empty( ))
             {
                 FreeAllNodes( );
-                m_State = SEARCH_STATE_FAILED;
+                m_State = SearchState::FAILED;
                 return m_State;
             }
 
@@ -254,7 +251,7 @@ public: // methods
                 // delete nodes that aren't needed for the solution
                 FreeUnusedNodes( );
 
-                m_State = SEARCH_STATE_SUCCEEDED;
+                m_State = SearchState::SUCCEEDED;
 
                 return m_State;
             }
@@ -296,7 +293,7 @@ public: // methods
                     FreeNode(( n ));
                     FreeAllNodes( );
 
-                    m_State = SEARCH_STATE_OUT_OF_MEMORY;
+                    m_State = SearchState::OUT_OF_MEMORY;
                     return m_State;
                 }
 
@@ -501,6 +498,11 @@ public: // methods
 		}
 
 	}
+
+    SearchState GetSearchState( )
+    {
+        return m_State;
+    }
 
 	// Functions for traversing the solution
 
