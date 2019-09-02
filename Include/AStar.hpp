@@ -116,8 +116,6 @@ private: // data
     // debugging : count memory allocation and free's
     int m_AllocateNodeCount;
 
-    bool m_CancelRequest;
-
 public: // data
 
 	enum
@@ -153,22 +151,13 @@ public: // methods
 	    m_State = SEARCH_STATE_NOT_INITIALISED;
 	    m_CurrentSolutionNode = nullptr;
 	    m_AllocateNodeCount = 0;
-	    m_CancelRequest = false;
 	    m_Steps = 0;
 	}
 
-    // call at any time to cancel the search and free up all the memory
-	void CancelSearch()
-	{
-		m_CancelRequest = true;
-	}
-
-	// Set Start and goal states
+    // Set Start and goal states
 	void SetStartAndGoalStates( UserState &Start, UserState &Goal )
 	{
-		m_CancelRequest = false;
-
-		m_Start = new Node();
+        m_Start = new Node( );
 		m_AllocateNodeCount += 1;
 
 		m_Goal = new Node();
@@ -217,7 +206,7 @@ public: // methods
             // Failure is defined as emptying the open list as there is nothing left to
             // search...
             // New: Allow user abort
-            if ( m_OpenList.empty( ) || m_CancelRequest )
+            if ( m_OpenList.empty( ))
             {
                 FreeAllNodes( );
                 m_State = SEARCH_STATE_FAILED;
