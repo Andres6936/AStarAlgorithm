@@ -189,18 +189,16 @@ int main( int argc, char *argv[] )
 	// in travelling (think ice rink if you can skate) whilst 5 represents the 
 	// most difficult. 9 indicates that we cannot pass.
 
-	// Create an instance of the search class...
-	AStar<SearchNode> aStar;
-
     // Create a start state
     SearchNode nodeStart( 3, 5 );
 
     // Define the goal state
     SearchNode nodeEnd( 17, 15 );
 
+    // Create an instance of the search class...
     // Set Start and goal states
+    AStar <SearchNode> aStar( nodeStart, nodeEnd );
 
-    aStar.SetStartAndGoalStates( nodeStart, nodeEnd );
     aStar.ComputePath( );
 
     if ( aStar.GetSearchState( ) == SearchState::SUCCEEDED )
@@ -226,7 +224,8 @@ int main( int argc, char *argv[] )
             steps ++;
         }
 
-        cout << "\nSolution steps " << steps << endl;
+        cout << "\nSolution steps: " << steps << endl;
+        cout << "Number of steps: " << aStar.GetNumberSteps( ) << endl;
 
         // Once you're done with the solution you can free the nodes up
         aStar.FreeSolutionNodes();

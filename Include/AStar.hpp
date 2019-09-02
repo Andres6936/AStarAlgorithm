@@ -145,44 +145,38 @@ public: // methods
 
 
 	// constructor just initialises private data
-	AStar()
-	{
-        m_State = SearchState::NOT_INITIALISED;
-	    m_CurrentSolutionNode = nullptr;
+    AStar( UserState &Start, UserState &Goal )
+    {
+        m_CurrentSolutionNode = nullptr;
 	    m_AllocateNodeCount = 0;
-	    m_Steps = 0;
-	}
 
-    // Set Start and goal states
-	void SetStartAndGoalStates( UserState &Start, UserState &Goal )
-	{
         m_Start = new Node( );
-		m_AllocateNodeCount += 1;
-
-		m_Goal = new Node();
         m_AllocateNodeCount += 1;
 
-		assert((m_Start != nullptr && m_Goal != nullptr));
-		
-		m_Start->m_UserState = Start;
-		m_Goal->m_UserState = Goal;
+        m_Goal = new Node( );
+        m_AllocateNodeCount += 1;
+
+        assert(( m_Start != nullptr && m_Goal != nullptr ));
+
+        m_Start->m_UserState = Start;
+        m_Goal->m_UserState = Goal;
 
         m_State = SearchState::SEARCHING;
-		
-		// Initialise the AStar specific parts of the Start Node
-		// The user only needs fill out the state information
 
-		m_Start->g = 0; 
-		m_Start->h = m_Start->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
-		m_Start->f = m_Start->g + m_Start->h;
+        // Initialise the AStar specific parts of the Start Node
+        // The user only needs fill out the state information
+
+        m_Start->g = 0;
+        m_Start->h = m_Start->m_UserState.GoalDistanceEstimate( m_Goal->m_UserState );
+        m_Start->f = m_Start->g + m_Start->h;
         m_Start->parent = nullptr;
 
-		// Push the start node on the Open list
+        // Push the start node on the Open list
 
-		m_OpenList.push_back( m_Start ); // heap now unsorted
+        m_OpenList.push_back( m_Start ); // heap now unsorted
 
-		// Initialise counter for search steps
-		m_Steps = 0;
+        // Initialise counter for search steps
+        m_Steps = 0;
 	}
 
     // Advances search
@@ -230,7 +224,8 @@ public: // methods
                 // so handle that here
                 if ( false == n->m_UserState.IsSameState( m_Start->m_UserState ))
                 {
-                    FreeNode( n );
+                    m_AllocateNodeCount--;
+                    delete ( n );
 
                     // set the child pointers in each node (except Goal which has no child)
                     Node *nodeChild = m_Goal;
@@ -290,7 +285,8 @@ public: // methods
                     m_Successors.clear( ); // empty vector of successor nodes to n
 
                     // free up everything else we allocated
-                    FreeNode(( n ));
+                    m_AllocateNodeCount--;
+                    delete (( n ));
                     FreeAllNodes( );
 
                     m_State = SearchState::OUT_OF_MEMORY;
@@ -328,7 +324,8 @@ public: // methods
 
                         if (( *openlist_result )->g <= ValueGSuccessor )
                         {
-                            FreeNode(( successor ));
+                            m_AllocateNodeCount--;
+                            delete (( successor ));
 
                             // the one on Open is cheaper than this one
                             continue;
@@ -354,7 +351,8 @@ public: // methods
                         if (( *closedlist_result )->g <= ValueGSuccessor )
                         {
                             // the one on Closed is cheaper than this one
-                            FreeNode(( successor ));
+                            m_AllocateNodeCount--;
+                            delete (( successor ));
 
                             continue;
                         }
@@ -383,7 +381,8 @@ public: // methods
                         ( *closedlist_result )->f = successor->f;
 
                         // Free successor node
-                        FreeNode( successor );
+                        m_AllocateNodeCount--;
+                        delete ( successor );
 
                         // Push closed node into open list
                         m_OpenList.push_back(( *closedlist_result ));
@@ -415,7 +414,8 @@ public: // methods
                         ( *openlist_result )->f = successor->f;
 
                         // Free successor node
-                        FreeNode( successor );
+                        m_AllocateNodeCount--;
+                        delete ( successor );
 
                         // re-make the heap
                         // make_heap rather than sort_heap is an essential bug fix
@@ -482,27 +482,35 @@ public: // methods
 			{
 				Node *del = n;
 				n = n->child;
-				FreeNode( del );
 
-			} while( n != m_Goal );
+                m_AllocateNodeCount--;
+                delete ( del );
 
-			FreeNode( n ); // Delete the goal
+            }
+            while ( n != m_Goal );
+
+            m_AllocateNodeCount--;
+            delete ( n ); // Delete the goal
 
 		}
 		else
 		{
 			// if the start node is the solution we need to just delete the start and goal
 			// nodes
-			FreeNode( m_Start );
-			FreeNode( m_Goal );
-		}
+            m_AllocateNodeCount--;
+            delete ( m_Start );
+
+            m_AllocateNodeCount--;
+            delete ( m_Goal );
+        }
 
 	}
 
     SearchState GetSearchState( )
-    {
-        return m_State;
-    }
+    { return m_State; }
+
+    unsigned int GetNumberSteps( )
+    { return m_Steps; }
 
 	// Functions for traversing the solution
 
@@ -631,13 +639,6 @@ private: // methods
 
 		m_ClosedList.clear();
 	}
-
-    void FreeNode( Node *node )
-	{
-		m_AllocateNodeCount --;
-		delete node;
-	}
-
 };
 
 #endif
