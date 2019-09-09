@@ -205,23 +205,15 @@ int main( int argc, char *argv[] )
     {
         cout << "\nSearch found goal state\n\n";
 
-        SearchNode *node = aStar.GetSolutionStart();
-
         int steps = 0;
 
-        node->PrintNodeInfo();
-
-        for( ;; )
+        while ( aStar.GetSizePath( ) > 0 )
         {
-            node = aStar.GetSolutionNext();
+            Point2D point = aStar.Walk( );
 
-            if( !node )
-            {
-                break;
-            }
+            cout << "Node position : (" << setw( 2 ) << point.x << ", " << setw( 2 ) << point.y << ")\n";
 
-            node->PrintNodeInfo();
-            steps ++;
+            steps += 1;
         }
 
         cout << "\nSolution steps: " << steps << endl;

@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <set>
 #include <vector>
+#include <queue>
 #include <cfloat>
 
 enum class SearchState : short
@@ -46,6 +47,27 @@ enum class SearchState : short
     SEARCHING,
     SUCCEEDED,
     FAILED
+};
+
+class Point2D
+{
+
+public:
+
+    int x;
+    int y;
+
+    Point2D( )
+    {
+        x = 0;
+        y = 0;
+    }
+
+    Point2D( int X, int Y )
+    {
+        x = X;
+        y = Y;
+    }
 };
 
 using namespace std;
@@ -109,6 +131,8 @@ private: // data
     // Successors is a vector filled out by the user each type successors to a node
     // are generated
     vector< Node * > m_Successors;
+
+    queue <Point2D> m_Points;
 
     // State
     SearchState m_State;
@@ -247,6 +271,20 @@ public: // methods
                 FreeUnusedNodes( );
 
                 m_State = SearchState::SUCCEEDED;
+
+                // Store the start point
+                m_Points.push( Point2D( m_Start->m_UserState.x, m_Start->m_UserState.y ));
+
+                m_CurrentSolutionNode = m_Start;
+
+                while ( m_CurrentSolutionNode->child )
+                {
+                    Node *child = m_CurrentSolutionNode->child;
+
+                    m_Points.push( Point2D( child->m_UserState.x, child->m_UserState.y ));
+
+                    m_CurrentSolutionNode = m_CurrentSolutionNode->child;
+                }
 
                 return m_State;
             }
@@ -507,40 +545,20 @@ public: // methods
 
 	// Functions for traversing the solution
 
-	// Get start node
-	UserState *GetSolutionStart()
-	{
-		m_CurrentSolutionNode = m_Start;
-		if( m_Start )
-		{
-			return &m_Start->m_UserState;
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-	
-	// Get next node
-	UserState *GetSolutionNext()
-	{
-		if( m_CurrentSolutionNode )
-		{
-			if( m_CurrentSolutionNode->child )
-			{
+    Point2D Walk( )
+    {
+        Point2D point = m_Points.front( );
+        m_Points.pop( );
 
-				Node *child = m_CurrentSolutionNode->child;
+        return point;
+    }
 
-				m_CurrentSolutionNode = m_CurrentSolutionNode->child;
+    unsigned int GetSizePath( )
+    {
+        return m_Points.size( );
+    }
 
-				return &child->m_UserState;
-			}
-		}
-
-		return NULL;
-	}
-	
-	// Get end node
+    // Get end node
 	UserState *GetSolutionEnd()
 	{
 		m_CurrentSolutionNode = m_Goal;
