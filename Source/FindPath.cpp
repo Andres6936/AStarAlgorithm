@@ -197,9 +197,9 @@ int main( int argc, char *argv[] )
 
     // Create an instance of the search class...
     // Set Start and goal states
-    AStar <SearchNode> aStar( nodeStart, nodeEnd );
+    AStar <SearchNode> aStar;
 
-    aStar.ComputePath( );
+    aStar.ComputePath( nodeStart, nodeEnd );
 
     if ( aStar.GetSearchState( ) == SearchState::SUCCEEDED )
     {
