@@ -169,10 +169,18 @@ public: // methods
 
 
 	// constructor just initialises private data
-    AStar( UserState &Start, UserState &Goal )
+    AStar( )
+    {
+        m_State = SearchState::NOT_INITIALISED;
+        m_AllocateNodeCount = 0;
+        m_Steps = 0;
+    }
+
+    // Advances search
+    SearchState ComputePath( UserState Start, UserState Goal )
     {
         m_CurrentSolutionNode = nullptr;
-	    m_AllocateNodeCount = 0;
+        m_AllocateNodeCount = 0;
 
         m_Start = new Node( );
         m_AllocateNodeCount += 1;
@@ -201,11 +209,7 @@ public: // methods
 
         // Initialise counter for search steps
         m_Steps = 0;
-	}
 
-    // Advances search
-    SearchState ComputePath( )
-	{
 		// Firstly break if the user has not initialised the search
         assert( m_State != SearchState::NOT_INITIALISED );
         assert( m_State == SearchState::SEARCHING );
@@ -269,6 +273,9 @@ public: // methods
 
                 // delete nodes that aren't needed for the solution
                 FreeUnusedNodes( );
+                // Clear the list of points
+                while ( !m_Points.empty( ))
+                { m_Points.pop( ); }
 
                 m_State = SearchState::SUCCEEDED;
 
